@@ -1,0 +1,61 @@
+# =========================
+# MONGODB NAMESPACE
+# =========================
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mongodb
+
+---
+# =========================
+# MONGODB DEPLOYMENT
+# =========================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: database
+  namespace: mongodb
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: mongo
+
+  template:
+    metadata:
+      labels:
+        app: mongo
+
+    spec:
+      containers:
+        - name: database
+          image: mongo:latest
+
+          ports:
+            - containerPort: 27017
+
+---
+# =========================
+# MONGODB SERVICE
+# =========================
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: databaseservice
+  namespace: mongodb
+
+spec:
+  type: ClusterIP
+
+  selector:
+    app: mongo
+
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017

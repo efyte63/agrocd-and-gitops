@@ -1,0 +1,61 @@
+# =========================
+# BACKEND NAMESPACE
+# =========================
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: backend-team
+
+---
+# =========================
+# BACKEND DEPLOYMENT
+# =========================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: backend-team
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: backend
+
+  template:
+    metadata:
+      labels:
+        app: backend
+
+    spec:
+      containers:
+        - name: backend
+          image: dhruvnaina11/kuberimages:latest
+
+          ports:
+            - containerPort: 3000
+
+---
+# =========================
+# BACKEND SERVICE
+# =========================
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: backend-team
+
+spec:
+  type: ClusterIP
+
+  selector:
+    app: backend
+
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
